@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {createAccount,createClient} from 'genlayer-js';
+import {studionet} from 'genlayer-js/chains';
+const env=fs.readFileSync(path.resolve('../../../../../accounts.env'),'utf8');
+const raw=env.match(/^ACCOUNT_7_GENLAYER_PRIVATE_KEY\s*=\s*"?([^"\r\n]+)/m)[1].trim();
+const client=createClient({chain:studionet,endpoint:'https://studio.genlayer.com/api',account:createAccount(`0x${raw}`)});
+const address=process.argv[2],id='DRILL-17';
+const hash=await client.writeContract({address,functionName:'register_tool',args:[id,'Cordless Drill',['Drill pilot holes in wood','Drive compatible fasteners at controlled speed'],['No wet locations','No masonry without a rated bit'],['Inspect housing and guards','Test trigger and chuck','Count battery and bit accessories'],24n],value:0n});
+console.log('register_tx='+hash);console.log(JSON.stringify(await client.waitForTransactionReceipt({hash,status:'FINALIZED',retries:180,interval:5000})));console.log(JSON.stringify(await client.readContract({address,functionName:'get_tool',args:[id]})));

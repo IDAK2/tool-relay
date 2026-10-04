@@ -1,0 +1,5 @@
+import json,re,sys
+from pathlib import Path
+from genlayer_py import create_account,create_client
+from genlayer_py.chains import studionet
+R=Path(__file__).parents[1];text=(R.parents[3]/"accounts.env").read_text();key=re.search(r'^ACCOUNT_7_GENLAYER_PRIVATE_KEY\s*=\s*"?([^"\r\n]+)',text,re.M).group(1).strip();client=create_client(chain=studionet,account=create_account(account_private_key=key));address=sys.argv[1];tool="DRILL-17";args=[tool,"Cordless Drill",["Drill pilot holes in wood","Drive compatible fasteners at controlled speed"],["No wet locations","No masonry without a rated bit"],["Inspect housing and guards","Test trigger and chuck","Count battery and bit accessories"],24];tx=client.write_contract(address=address,function_name="register_tool",args=args);print("register_tx="+str(tx),flush=True);receipt=client.wait_for_transaction_receipt(transaction_hash=tx,wait_until="finalized",retries=180,interval=5000,full_transaction=True);print(json.dumps({"tx":str(tx),"result":receipt.get("result_name")},default=str),flush=True);print(json.dumps(client.read_contract(address=address,function_name="get_tool",args=[tool]),default=str),flush=True)
