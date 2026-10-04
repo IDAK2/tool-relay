@@ -7,6 +7,10 @@
 **Category:** Projects  
 **Primary tag:** Marketplaces
 
+**Live site:** https://tool-relay.pages.dev/  
+**Repository:** https://github.com/IDAK2/tool-relay  
+**Contract:** `0xe9A6D48A94E136B0169e79019418Ca3867F80361`
+
 ## The circulation promise
 
 A shared tool should move only when the planned job fits its capabilities, avoids every prohibited use, and arrives back with a complete inspection record. Tool Relay makes that promise executable. A librarian freezes the rules. A borrower explains the job. GenLayer validators independently judge fit before checkout and condition before recirculation.
