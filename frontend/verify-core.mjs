@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import{createAccount,createClient}from'genlayer-js';
+import{studionet}from'genlayer-js/chains';
+const env=fs.readFileSync(path.resolve('../../../../../accounts.env'),'utf8');
+const raw=env.match(/^ACCOUNT_7_GENLAYER_PRIVATE_KEY\s*=\s*"?([^"\r\n]+)/m)[1].trim();
+const client=createClient({chain:studionet,endpoint:'https://studio.genlayer.com/api',account:createAccount(`0x${raw}`)}),address=process.argv[2];
+const job='On a dry indoor wooden workbench, drill small pilot holes in two pine shelf boards, then drive manufacturer-compatible wood screws at low controlled speed. This job uses no masonry, concrete, wet location, or unlisted material.';
+const safety='Before work, inspect the housing, guard, chuck, battery, and rated wood bit. Wear eye protection, clamp both boards, keep hands behind the bit, remove the battery before bit changes, and stop if the tool heats or binds.';
+const hash=await client.writeContract({address,functionName:'request_checkout',args:['DRILL-17',job,safety],value:0n});
+console.log('checkout_tx='+hash);const receipt=await client.waitForTransactionReceipt({hash,status:'FINALIZED',retries:180,interval:5000});console.log(JSON.stringify({result:receipt.result_name,execution:receipt.consensus_data?.leader_receipt?.[0]?.execution_result}));console.log(JSON.stringify(await client.readContract({address,functionName:'get_tool',args:['DRILL-17']})));
